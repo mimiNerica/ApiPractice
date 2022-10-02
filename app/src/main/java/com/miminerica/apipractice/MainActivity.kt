@@ -2,6 +2,7 @@ package com.miminerica.apipractice
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,6 +13,10 @@ class MainActivity : BaseActivity() {
     }
 
     override fun setupEvent() {
+        loginBtn.setOnClickListener {
+            val inputEmail = emailEdt.text.toString()
+            val inputPassword = passwordEdt.text.toString()
+        }
 
     }
 

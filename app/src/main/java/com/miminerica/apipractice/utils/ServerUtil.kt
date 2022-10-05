@@ -1,16 +1,22 @@
 package com.miminerica.apipractice.utils
 
-import okhttp3.FormBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import android.util.Log
+import okhttp3.*
+import org.json.JSONObject
+import java.io.IOException
 
 class ServerUtil {
 
     companion object {
 
+        interface JsonResponseHandler {
+
+            fun onResponse(jsonObj : JSONObject)
+        }
+
         val BASE_URL = "http://54.180.52.26"
 
-        fun postRequestLogin(email : String, pw : String) {
+        fun postRequestLogin(email : String, pw : String, handler: JsonResponseHandler?) {
 
             val urlString = "${BASE_URL}/user"
             val formData = FormBody.Builder()
@@ -22,8 +28,52 @@ class ServerUtil {
                 .post(formData)
                 .build()
             val client = OkHttpClient()
-            client.newCall(request)
+            client.newCall(request).enqueue(object : Callback{
+                override fun onFailure(call: Call, e: IOException) {
 
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val bodyString = response.body!!.string()
+                    val jsonObj = JSONObject(bodyString)
+
+                    Log.d("응답본문", jsonObj.toString())
+
+                    handler?.onResponse(jsonObj)
+
+
+                }
+
+            })
+
+        }
+
+        fun putRequestSignup(email: String, pw: String, nick : String, handler : JsonResponseHandler?) {
+
+            val urlString = "${BASE_URL}/user"
+            val formData = FormBody.Builder()
+                .add("email", email)
+                .add("password", pw)
+                .add("nick_name", nick)
+                .build()
+            val request = Request.Builder()
+                .url(urlString)
+                .put(formData)
+                .build()
+            val client = OkHttpClient()
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val bodystring = response.body!!.string()
+                    val jsonObj = JSONObject(bodystring)
+
+                    handler?.onResponse(jsonObj)
+                }
+
+            })
         }
     }
 }

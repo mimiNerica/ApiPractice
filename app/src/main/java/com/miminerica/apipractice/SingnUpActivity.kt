@@ -1,47 +1,45 @@
 package com.miminerica.apipractice
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.miminerica.apipractice.utils.ServerUtil
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_singn_up.*
 import org.json.JSONObject
 
-class MainActivity : BaseActivity() {
+class SingnUpActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_singn_up)
+
         setupEvent()
         setValue()
     }
 
     override fun setupEvent() {
-        loginBtn.setOnClickListener {
+        signUpBtn.setOnClickListener {
             val inputEmail = emailEdt.text.toString()
             val inputPassword = passwordEdt.text.toString()
+            val inputNickname = nicknameEdt.text.toString()
 
-            ServerUtil.postRequestLogin(inputEmail, inputPassword, object : ServerUtil.Companion.JsonResponseHandler {
+            ServerUtil.putRequestSignup(inputEmail, inputPassword, inputNickname, object : ServerUtil.Companion.JsonResponseHandler {
                 override fun onResponse(jsonObj: JSONObject) {
-                    val code = jsonObj.getInt("code")
-
-                    if (code == 200) {
+                    if (jsonObj.getInt("code") == 200) {
 
                     } else {
                         val message = jsonObj.getString("message")
+                        Log.d("msg", jsonObj.toString())
 
-                        runOnUiThread {
-                            Toast.makeText(mContext, message, Toast.LENGTH_SHORT ).show()
+                        runOnUiThread{
+                            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
             })
         }
-        signUpBtn.setOnClickListener {
-            val myIntent = Intent(mContext, SingnUpActivity ::class.java)
-            startActivity(myIntent)
 
-        }
+
 
     }
 

@@ -2,6 +2,7 @@ package com.miminerica.apipractice.utils
 
 import android.util.Log
 import okhttp3.*
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.json.JSONObject
 import java.io.IOException
 
@@ -74,6 +75,35 @@ class ServerUtil {
                 }
 
             })
+        }
+
+        fun getRequestDuplCheck(type : String, value : String, handler: JsonResponseHandler?) {
+
+//            val urlString = "${BASE_URL}/user_check"
+            val urlBulder = "${BASE_URL}/user_check".toHttpUrlOrNull()!!.newBuilder()
+            urlBulder.addEncodedQueryParameter("type", type)
+                .addEncodedQueryParameter("value", value)
+
+            val urlString = urlBulder.build().toString()
+            val request = Request.Builder()
+                .url(urlString)
+                .get()
+                .build()
+            val client = OkHttpClient()
+            client.newCall(request).enqueue(object  : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val bodystring = response.body!!.string()
+                    val  jsonObj = JSONObject(bodystring)
+
+                    handler?.onResponse(jsonObj)
+                }
+
+            })
+
         }
     }
 }

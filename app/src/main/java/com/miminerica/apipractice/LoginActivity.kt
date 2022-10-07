@@ -3,6 +3,7 @@ package com.miminerica.apipractice
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import com.miminerica.apipractice.utils.ContextUtil
 import com.miminerica.apipractice.utils.ServerUtil
 import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONObject
@@ -25,6 +26,8 @@ class LoginActivity : BaseActivity() {
                     val code = jsonObj.getInt("code")
 
                     if (code == 200) {
+                        val token = jsonObj.getJSONObject("data").getString("token")
+                        ContextUtil.setToken(mContext, token)
 
                         val myIntent = Intent(mContext, MainActivity ::class.java)
                         startActivity(myIntent)

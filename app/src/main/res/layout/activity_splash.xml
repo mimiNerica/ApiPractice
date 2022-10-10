@@ -5,11 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:gravity="center"
+    tools:context=".SplashActivity">
 
-    <ListView
-        android:id="@+id/topicListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@mipmap/ic_launcher"/>
 
 </LinearLayout>

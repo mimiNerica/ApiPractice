@@ -1,5 +1,6 @@
 package com.miminerica.apipractice.utils
 
+import android.content.Context
 import android.util.Log
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -104,6 +105,32 @@ class ServerUtil {
 
             })
 
+        }
+
+        fun getRequestMainInfo(context: Context, handler: JsonResponseHandler?){
+
+            val urlString = "${BASE_URL}/v2/main_info".toHttpUrlOrNull()!!.newBuilder().build().toString()
+
+            val request = Request.Builder()
+                .url(urlString)
+                .get()
+                .header("X-Http-Token", ContextUtil.getToken(context))
+                .build()
+            val client = OkHttpClient()
+            client.newCall(request).enqueue(object : Callback{
+                override fun onFailure(call: Call, e: IOException) {
+
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val bodyString = response.body!!.string()
+                    val jsonObj = JSONObject(bodyString)
+
+                    handler?.onResponse(jsonObj)
+                }
+
+
+            })
         }
     }
 }
